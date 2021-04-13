@@ -30,6 +30,10 @@ $ flask run
 $ python3 -m flask run
 ```
 
-### 4. Open browser
+### 4. Run the application
+
+Only Fasttext and Roberta button works
+
+### 5. Open browser
 
 Go to <http://127.0.0.1:5000>.
