@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+
+<body>
+  <div id="app">
+    <v-app>
+      <v-app-bar app color="deep-purple accent-4" dark>
+        <v-toolbar-title>Jurisponse QA System</v-toolbar-title>
+      </v-app-bar>
+      <v-main>
+        <v-container fluid>
+          <v-overlay :value="loading">
+            <v-progress-circular indeterminate size="64" />
+          </v-overlay>
+          <v-row class="mb-6">
+            <v-col>
+              <v-card class="pa-2" outlined tile elevation="8" >
+                <v-toolbar flat>
+                  <v-toolbar-title class="display-1">
+                    Question
+                  </v-toolbar-title>
+                </v-toolbar>
+                <v-divider class="mx-4"></v-divider>
+                <v-card-text class="body-1">
+                  <!-- <v-file-input
+                  label="Click here to select a .txt file"
+                  outlined
+                  v-model="chosenFile"
+                >
+                </v-file-input> -->
+
+                <v-textarea
+        clearable
+        clear-icon="mdi-close-circle"
+        background-color="grey lighten-2"
+        color="deep-purple accent-4"
+        label="Please Enter the text Document..."
+        v-model="textdocument"
+      ></v-textarea>
+                  <v-form ref="form" v-model="valid" lazy-validation>
+                    <v-row no-gutters>
+                      <v-col cols="12">
+                        <v-select
+                          v-model="select"
+                          :items="examples"
+                          label="Choose an example..."
+                          outlined
+                        />
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field
+                          v-model="question"
+                          :counter="100"
+                          :rules="questionRules"
+                          label="Question"
+                          append-icon="mdi-magnify"
+                          required
+                          outlined
+                          autofocus
+                        />
+                      </v-col>
+                    </v-card-text>
+                    <!-- <v-card-actions class="pe-4">
+                      <v-spacer></v-spacer>
+                      <v-btn
+                        @click="submit"
+                        :disabled="loading || !valid"
+                        color="deep-purple accent-4" dark
+                      >
+                        Run
+                      </v-btn> -->
+                      
+                    </v-card-actions>
+                    <!-- title mb-2 -->
+                    <!-- <v-card-text>
+                      <h2 class="pe-4">
+                        Choose Machine Comprehension (MC) model
+                      </h2>
+                      <v-chip-group
+        v-model="selection"
+        active-class="deep-purple accent-4 white--text"
+        column
+      dark>
+        <v-chip>Bert </v-chip>
+
+        <v-chip>Roberta</v-chip>
+
+        <v-chip>Electra</v-chip>
+
+        <v-chip>Albert</v-chip>
+        
+        <v-chip>Xlm-Roberta</v-chip>
+      </v-chip-group>
+    </v-card-text> -->
+    <v-card-text>
+      <h2 class="pe-4">
+        Choose Information Retrieval (IR) model
+      </h2>
+      <v-chip-group
+        v-model="selection1"
+        active-class="deep-purple accent-4 white--text"
+        column
+      >
+        <v-chip>Fasttext </v-chip>
+
+        <v-chip>Conceptnet</v-chip>
+
+        <v-chip>Glove</v-chip>
+
+        <v-chip>Word-2-vec</v-chip>
+      </v-chip-group>
+    </v-card-text>
+    <v-card-text>
+      <h2 class="pe-4">
+        Choose Machine Comprehension (MC) model
+      </h2>
+      <v-chip-group
+v-model="selection"
+active-class="deep-purple accent-4 white--text"
+column
+dark>
+<v-chip>Bert </v-chip>
+
+<v-chip>Roberta</v-chip>
+
+<v-chip>Electra</v-chip>
+
+<v-chip>Albert</v-chip>
+
+<v-chip>Xlm-Roberta</v-chip>
+</v-chip-group>
+  </v-card-text>
+  <v-card-actions class="pe-4">
+    <v-spacer></v-spacer>
+    <v-btn
+      @click="submit"
+      :disabled="loading || !valid"
+      color="deep-purple accent-4" dark
+    >
+      Run
+    </v-btn>
+    
+  </v-card-actions>
+                    </v-row>
+                  </v-form>
+                </v-card-text>
+                <!-- <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn right @click="importTxt">Read File</v-btn>
+                </v-card-actions> -->
+
+                
+
+              
+              </v-card>
+            </v-col>
+            <!-- <v-col cols="auto">
+              <v-card width="600" height="300" raised>
+                <v-card-title>File contents:</v-card-title>
+                <v-card-text><p>{{ data }}</p></v-card-text>
+              </v-card>
+            </v-col> -->
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-card class="pa-2" outlined tile elevation="8">
+                <v-card-title class="display-1">
+                  Answers
+                </v-card-title>
+                <v-divider class="mx-4"></v-divider>
+                <v-card-text class="body-1">
+                  <v-data-table
+                    :headers="headers"
+                    :items="result"
+                    class="elevation-1"
+                  >
+                    <template v-slot:item.text="{ item }">
+                      [[ item.text.slice(0, item.start) ]]
+                      <v-chip>[[ item.text.slice(item.start, item.end) ]]</v-chip>
+                      [[ item.text.slice(item.end) ]]
+                    </template>
+                  </v-data-table>
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-main>
+    </v-app>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script>
+    axios.defaults.xsrfCookieName = 'csrftoken';
+    axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+    const base_url = window.location.href;
+    new Vue({
+      el: '#app',
+      vuetify: new Vuetify(),
+      delimiters: ['[[', ']]'],
+      data: {
+        question: '',
+        machinecomp: '',
+        wordemb: '',
+        doc: '',
+        loading: false,
+        select: null,
+        result: [],
+        chosenFile: null,
+        data: null,
+        datanum: null,
+        questionRules: [
+          (v, y) => !!v || 'Question is required',
+          (v, y) =>
+            (v && v.length <= 100) || 'Question must be less than 100 characters'
+        ],
+        valid: true,
+        headers: [
+          { text: 'PR Score', value: 'simscore' },
+          { text: 'MC Score', value: 'score' },
+          { text: 'Answer', value: 'answer' },
+          { text: 'Text', value: 'text' }
+        ],
+        examples: [
+          'What did Kaung send Col on January 7, 2004?',
+          'When did the Court of Chancery hold a one day trial?',
+          'Who is Kelso?',
+          'Acosta is a native and a citizen of which country?',
+          'What evidence was used to show Acosta legally entered the United States?',
+          'When did USCIS deny Acosta his application due to fraudulent documents?',
+          'Why was the lawsuit brought?',
+          'What damages did the plaintiff suffer?',
+          'What damages did Martin suffer?'
+        ]
+      },
+      watch: {
+        select() {
+          this.question = this.select
+        }
+      },
+      methods: {
+        async analyze() {
+          this.loading = true 
+          
+      const payload = { question: this.question,
+                        machinecomp: this.selection,
+                        wordemb: this.selection1,
+                        doc: this.textdocument
+                         }
+          const url = '/answer-question'
+          const headers = {
+            'X-API-Key': 'MJb1NjRgSN6IQMVyCDg3D1HD7MCWGbsn5Af96yLd',
+            'Content-Type': 'application/json'
+          }
+          await axios
+            .post(url, payload, { headers: headers })
+            .then((response) => {
+              this.result = response.data
+            })
+          this.loading = false
+        },
+        submit() {
+          if (this.question === '') {
+            this.result = []
+            return
+          }
+          this.analyze()
+        },
+        importTxt() {
+      
+      if (!this.chosenFile) {this.data = "No File Chosen"}
+      var reader = new FileReader();
+      
+      // Use the javascript reader object to load the contents
+      // of the file in the v-model prop
+      reader.readAsText(this.chosenFile);
+      reader.onload = () => {
+        this.data = reader.result;
+      }
+    },
+        setText(question, selection, selection1,textdocument) {
+          this.question = question
+          this.machinecomp = selection
+          this.wordemb = selection1
+          this.doc = textdocument
+
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>
