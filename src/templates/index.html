@@ -30,21 +30,14 @@
                 </v-toolbar>
                 <v-divider class="mx-4"></v-divider>
                 <v-card-text class="body-1">
-                  <!-- <v-file-input
-                  label="Click here to select a .txt file"
-                  outlined
-                  v-model="chosenFile"
-                >
-                </v-file-input> -->
-
                 <v-textarea
-        clearable
-        clear-icon="mdi-close-circle"
-        background-color="grey lighten-2"
-        color="deep-purple accent-4"
-        label="Please Enter the text Document..."
-        v-model="textdocument"
-      ></v-textarea>
+                    clearable
+                    clear-icon="mdi-close-circle"
+                    background-color="grey lighten-2"
+                    color="deep-purple accent-4"
+                    label="Please Enter the text Document..."
+                    v-model="textdocument"
+                ></v-textarea>
                   <v-form ref="form" v-model="valid" lazy-validation>
                     <v-row no-gutters>
                       <v-col cols="12">
@@ -68,106 +61,63 @@
                         />
                       </v-col>
                     </v-card-text>
-                    <!-- <v-card-actions class="pe-4">
-                      <v-spacer></v-spacer>
-                      <v-btn
-                        @click="submit"
-                        :disabled="loading || !valid"
-                        color="deep-purple accent-4" dark
-                      >
-                        Run
-                      </v-btn> -->
-                      
+                
                     </v-card-actions>
-                    <!-- title mb-2 -->
-                    <!-- <v-card-text>
-                      <h2 class="pe-4">
-                        Choose Machine Comprehension (MC) model
-                      </h2>
+                    
+                <v-card-text>
+                  <h2 class="pe-4">
+                    Choose Information Retrieval (IR) model
+                  </h2>
+                    <v-chip-group
+                      v-model="selection1"
+                      active-class="deep-purple accent-4 white--text"
+                      column
+                    >
+                      <v-chip>Fasttext </v-chip>
+
+                      <v-chip>Conceptnet</v-chip>
+
+                      <v-chip>Glove</v-chip>
+
+                      <v-chip>Word-2-vec</v-chip>
+                    </v-chip-group>
+                  </v-card-text>
+                  <v-card-text>
+                    <h2 class="pe-4">
+                      Choose Machine Comprehension (MC) model
+                    </h2>
                       <v-chip-group
-        v-model="selection"
-        active-class="deep-purple accent-4 white--text"
-        column
-      dark>
-        <v-chip>Bert </v-chip>
+                        v-model="selection"
+                        active-class="deep-purple accent-4 white--text"
+                        column
+                        dark>
+                        <v-chip>Bert </v-chip>
 
-        <v-chip>Roberta</v-chip>
+                        <v-chip>Roberta</v-chip>
 
-        <v-chip>Electra</v-chip>
+                        <v-chip>Electra</v-chip>
 
-        <v-chip>Albert</v-chip>
-        
-        <v-chip>Xlm-Roberta</v-chip>
-      </v-chip-group>
-    </v-card-text> -->
-    <v-card-text>
-      <h2 class="pe-4">
-        Choose Information Retrieval (IR) model
-      </h2>
-      <v-chip-group
-        v-model="selection1"
-        active-class="deep-purple accent-4 white--text"
-        column
-      >
-        <v-chip>Fasttext </v-chip>
+                        <v-chip>Albert</v-chip>
 
-        <v-chip>Conceptnet</v-chip>
-
-        <v-chip>Glove</v-chip>
-
-        <v-chip>Word-2-vec</v-chip>
-      </v-chip-group>
-    </v-card-text>
-    <v-card-text>
-      <h2 class="pe-4">
-        Choose Machine Comprehension (MC) model
-      </h2>
-      <v-chip-group
-v-model="selection"
-active-class="deep-purple accent-4 white--text"
-column
-dark>
-<v-chip>Bert </v-chip>
-
-<v-chip>Roberta</v-chip>
-
-<v-chip>Electra</v-chip>
-
-<v-chip>Albert</v-chip>
-
-<v-chip>Xlm-Roberta</v-chip>
-</v-chip-group>
-  </v-card-text>
-  <v-card-actions class="pe-4">
-    <v-spacer></v-spacer>
-    <v-btn
-      @click="submit"
-      :disabled="loading || !valid"
-      color="deep-purple accent-4" dark
-    >
-      Run
-    </v-btn>
+                        <v-chip>Xlm-Roberta</v-chip>
+                      </v-chip-group>
+                    </v-card-text>
+                  <v-card-actions class="pe-4">
+                  <v-spacer></v-spacer>
+                    <v-btn
+                      @click="submit"
+                      :disabled="loading || !valid"
+                      color="deep-purple accent-4" dark
+                    >
+                    Run
+                    </v-btn>
     
-  </v-card-actions>
+                  </v-card-actions>
                     </v-row>
                   </v-form>
                 </v-card-text>
-                <!-- <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn right @click="importTxt">Read File</v-btn>
-                </v-card-actions> -->
-
-                
-
-              
               </v-card>
             </v-col>
-            <!-- <v-col cols="auto">
-              <v-card width="600" height="300" raised>
-                <v-card-title>File contents:</v-card-title>
-                <v-card-text><p>{{ data }}</p></v-card-text>
-              </v-card>
-            </v-col> -->
           </v-row>
           <v-row>
             <v-col>
@@ -259,7 +209,6 @@ dark>
                          }
           const url = '/answer-question'
           const headers = {
-            'X-API-Key': 'MJb1NjRgSN6IQMVyCDg3D1HD7MCWGbsn5Af96yLd',
             'Content-Type': 'application/json'
           }
           await axios
@@ -276,18 +225,6 @@ dark>
           }
           this.analyze()
         },
-        importTxt() {
-      
-      if (!this.chosenFile) {this.data = "No File Chosen"}
-      var reader = new FileReader();
-      
-      // Use the javascript reader object to load the contents
-      // of the file in the v-model prop
-      reader.readAsText(this.chosenFile);
-      reader.onload = () => {
-        this.data = reader.result;
-      }
-    },
         setText(question, selection, selection1,textdocument) {
           this.question = question
           this.machinecomp = selection
