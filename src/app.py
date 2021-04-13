@@ -1,34 +1,31 @@
 import os
 
-import spacy
-
 from flask import Flask, render_template, jsonify, request
 import pickle
 from operator import itemgetter
 from gensim import corpora
-from components import QueryProcessor, DocumentRetrieval, PassageRetrieval, AnswerExtractor, AnswerExtractorConceptnet
+from src.components import AnswerExtractor
 from transformers import AutoTokenizer, AutoModelForQuestionAnswering, pipeline
 import nltk
 import re
 from nltk.corpus import stopwords
 from gensim.utils import simple_preprocess
-from flask_ngrok import run_with_ngrok
 
-
+nltk.download('stopwords')
+nltk.download('wordnet')
 
 app = Flask(__name__)
-# run_with_ngrok(app)
 
 stop_words = set(stopwords.words('english'))
 lemmatizer = nltk.stem.WordNetLemmatizer()
 similarity_matrix = []
 # Load the similarity matrix from the saved file.
 # similarity_Matrix_fasttext = pickle.load(open('similarity_matrix.sav', 'rb'))
-# similarity_matrix.append(similarity_Matrix_fasttext)
 similarity_Matrix_conceptnet = pickle.load(open('similarity_matrix_conceptnet.sav', 'rb'))
 # similarity_Matrix_glove = pickle.load(open('similarity_matrix_glove.sav', 'rb'))
 # similarity_Matrix_w2v = pickle.load(open('similarity_matrix_w2v.sav', 'rb'))
 # similarity_matrix.extend((similarity_Matrix_conceptnet,similarity_Matrix_glove,similarity_Matrix_w2v))
+
 similarity_matrix.append(similarity_Matrix_conceptnet)
 
 
@@ -57,7 +54,7 @@ nlp_xlm = ""
 # nlp.extend((nlp_roberta,tokenizer_electra,tokenizer_albert,tokenizer_xlm))
 
 # answer_extractor = AnswerExtractorConceptnet(similarity_Matrix_fasttext,similarity_Matrix_conceptnet,similarity_Matrix_glove,similarity_Matrix_w2v,nlp_bert, nlp_roberta,nlp_electra,nlp_albert,nlp_xlm,stop_words,lemmatizer)
-answer_extractor = AnswerExtractorConceptnet(similarity_matrix,nlp_bert,nlp_roberta,nlp_electra,nlp_albert,nlp_xlm,stop_words,lemmatizer)
+answer_extractor = AnswerExtractor(similarity_matrix,nlp_bert,nlp_roberta,nlp_electra,nlp_albert,nlp_xlm,stop_words,lemmatizer)
 
 
 
